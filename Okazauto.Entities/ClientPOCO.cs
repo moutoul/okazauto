@@ -15,13 +15,13 @@ namespace Okazauto.Entities
   
         public int Id { get; set; }
 
-        [DisplayName("Nom de Famille")]
         public string Nom { get; set; }
         public string Prenom { get; set; }
         public string Telephone { get; set; }
-
+        
         [Required]
         public string Email { get; set; }
         public string Adresse { get; set; }
+
     }
 }

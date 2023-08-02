@@ -10,9 +10,9 @@ namespace okazauto.Controllers
     [ApiController]
     public class ClientController : ControllerBase
     {
-        private readonly IRepository<ClientRepository, int> _clientRepository;
+        private readonly IRepository<ClientPOCO, int> _clientRepository;
 
-        public ClientController(IRepository<ClientRepository, int> clientRepository)
+        public ClientController(IRepository<ClientPOCO, int> clientRepository)
         {
             _clientRepository = clientRepository;
         }
@@ -21,7 +21,7 @@ namespace okazauto.Controllers
         {
             try
             {
-                ClientPOCO NouvClient = new ClientPOCO(); // Utilisez ClientPOCO au lieu de ClientRepository
+                ClientPOCO NouvClient = new ClientPOCO();
                 NouvClient.Prenom = client.Prenom;
                 NouvClient.Nom = client.Nom;
                 NouvClient.Email = client.Email;
@@ -36,7 +36,38 @@ namespace okazauto.Controllers
                 return BadRequest($"Error creating client: {ex.Message}");
             }
         }
+        [HttpDelete("{id}")]
+        public IActionResult DeleteClient(int id)
+        {
+            try
+            {
+                _clientRepository.Delete(id);
+                return Ok("supression de ce fdp");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("pas possible de supprimer cet id");
+            }
+        }
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            try
+            {
+                IEnumerable<ClientPOCO> clients = _clientRepository.GetAll();
+                return Ok(clients);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
+
+
     }
+
 }
+
+        
 
      

@@ -44,9 +44,23 @@ namespace Okazauto.Repositories
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            
+            using (SqlConnection connection = new SqlConnection(_connection))
+            {
+                
+               
+                using (SqlCommand command = new SqlCommand("dbo.DeleteClient",connection)) 
+                {
+                    command.CommandType=CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+             
+            }
+            
         }
-
         public ClientPOCO Get(int id)
         {
             throw new NotImplementedException();
@@ -54,7 +68,34 @@ namespace Okazauto.Repositories
 
         public IEnumerable<ClientPOCO> GetAll()
         {
-            throw new NotImplementedException();
+            List<ClientPOCO> clients = new List<ClientPOCO>();
+            using (SqlConnection connection = new SqlConnection(_connection))
+            {
+                using (SqlCommand command = new SqlCommand("dbo.GetClient", connection)) 
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                        while (reader.Read())
+                        {
+                            ClientPOCO client = new ClientPOCO
+                            {
+                                Id = (int)reader["Id"],
+                                Nom = reader["Nom"].ToString(),
+                                Prenom = reader["Prenom"].ToString(),
+                                Telephone = reader["Telephone"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                Adresse = reader["Adresse"].ToString()
+                            };
+                            clients.Add(client);
+                           
+                        }
+                }
+             return clients;
+                connection.Close();
+
+
+            }
         }
 
         public void Update(ClientPOCO obj)
@@ -63,3 +104,5 @@ namespace Okazauto.Repositories
         }
     }
 }
+
+
