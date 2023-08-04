@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Okazauto.Entities;
+using Okazauto.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -63,7 +64,30 @@ namespace Okazauto.Repositories
         }
         public ClientPOCO Get(int id)
         {
-            throw new NotImplementedException();
+            ClientPOCO retour = new ClientPOCO();
+            using (SqlConnection connection = new SqlConnection(_connection))
+            {
+                using(SqlCommand command = new SqlCommand("dbo.GetById",connection)) 
+                {
+                    command.CommandType=CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        
+                        retour.Id = (int)reader["Id"];
+                        retour.Nom = reader["Nom"].ToString();
+                        retour.Prenom = reader["Prenom"].ToString();
+                        retour.Telephone = reader["Telephone"].ToString();
+                        retour.Email = reader["Email"].ToString();
+                        retour.Adresse = reader["Adresse"].ToString();
+                    }
+                    connection.Close();
+                     
+                }
+                return retour;
+            }
         }
 
         public IEnumerable<ClientPOCO> GetAll()
@@ -100,7 +124,28 @@ namespace Okazauto.Repositories
 
         public void Update(ClientPOCO obj)
         {
-            throw new NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(_connection))
+            {
+
+
+                using (SqlCommand command = new SqlCommand("dbo.UpdateClient", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    connection.Open();
+                    command.Parameters.AddWithValue("@id", obj.Id);
+                    command.Parameters.AddWithValue("@nom", obj.Nom);
+                    command.Parameters.AddWithValue("@prenom", obj.Prenom);
+                    command.Parameters.AddWithValue("@telephone", obj.Telephone);
+                    command.Parameters.AddWithValue("@email", obj.Email);
+                    command.Parameters.AddWithValue("@adresse", obj.Adresse);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+
+
+                }
+
+            }
+
         }
     }
 }

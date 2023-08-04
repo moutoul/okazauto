@@ -29,7 +29,7 @@ namespace okazauto.Controllers
                 NouvClient.Telephone = client.Telephone;
 
                 int id = _clientRepository.Add(NouvClient);
-                return Ok($"Creation client d'un nouveau client  Id: {id}");
+                return Ok($"Creation d'un nouveau client  Id: {id}");
             }
             catch (Exception ex)
             {
@@ -49,8 +49,29 @@ namespace okazauto.Controllers
                 return BadRequest("pas possible de supprimer cet id");
             }
         }
+        [HttpGet("{id}")]
+
+        public IActionResult GetClient(int id) 
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    ClientPOCO client = _clientRepository.Get(id);
+                    return Ok(client);
+                }
+                else
+                {
+                    return NotFound("pas de client correspondant a cet ID");
+                }
+            }
+            catch (Exception ex)
+            {
+                return NotFound("pas de client correspondant a cet ID");
+            }
+        }
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAllClients()
         {
             try
             {
@@ -62,8 +83,31 @@ namespace okazauto.Controllers
                 return NotFound();
             }
         }
+        [HttpPatch]
+        public IActionResult UpdateClient(int id, ClientDTO UpClient)
+        {
+            
+            try
+            {
+                ClientPOCO clientUP = new ClientPOCO();
+                clientUP.Id = id;
+                clientUP.Nom = UpClient.Nom;
+                clientUP.Prenom = UpClient.Prenom;
+                clientUP.Telephone = UpClient.Telephone;
+                clientUP.Email = UpClient.Email;
+                clientUP.Adresse = UpClient.Adresse;
 
+                Console.WriteLine(clientUP.Nom);
 
+                _clientRepository.Update(clientUP);
+                 return Ok($"client mis a jour id: {id}");
+                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error updating client: {ex.Message}");
+            }
+        }
     }
 
 }

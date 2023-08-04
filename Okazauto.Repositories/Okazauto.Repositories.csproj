@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Okazauto.Entities\Okazauto.Entities.csproj" />
+    <ProjectReference Include="..\Okazauto.Models\Okazauto.Models.csproj" />
   </ItemGroup>
 
 </Project>
